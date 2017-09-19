@@ -22,18 +22,38 @@ document.addEventListener('DOMContentLoaded', e => {
   const roomId = formEl.dataset.room
 
   // socket.io 연결 수립하고 room 설정, username 설정
-
-
+  socket = io('/chat')
+  
+  socket.emit('join', {id: roomId}, data => {
+    username = data.username
+    console.log(username)
+  })
   // form 전송 이벤트 핸들러
-
+  formEl.addEventListener('submit', e => {
+    e.preventDefault()
+    const message = formEl.elements.message.value
+    const messageEl = appendText(messageListEl, formatMessage({username, message}))
+    socket.emit('new chat', {message}, data => {
+      // 메시지 전송이 잘 되었음을 표시해 주면 된다.(회색=>검정색)
+      messageEl.classList.remove('new')
+    })
+    formEl.reset()
+  })
 
   // (chat) 채팅 메시지가 올 때마다 출력
-
+  socket.on('chat', data => {
+    const messageEl =  appendText(messageListEl, formatMessage(data))
+    messageEl.classList.remove('new')
+  })
 
   // (user connected) 새 사용자가 접속한 사실을 출력
-
+  socket.on('user connected', data => {
+    appendText(messageListEl, `${data.username} 님이 접속하셨습니다.`)
+  })
 
   // (user disconnected) 사용자의 연결이 끊어졌다는 사실을 출력
-
+  socket.on('user disconnected', data => {
+    appendText(messageListEl, `${data.username} 님이 대화방을 나갔습니다.`)
+  })
 
 })
