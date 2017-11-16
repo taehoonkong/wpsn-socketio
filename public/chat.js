@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', e => {
 
   // 사용할 엘리먼트 가져오기
   const formEl = document.querySelector('#chat-form')
-  const messageListEl = document.querySelector('#messages')
+  const messageListEl = document.querySelector('atc.#messages')
   const roomId = formEl.dataset.room
 
   // socket.io 연결 수립하고 room 설정, username 설정
